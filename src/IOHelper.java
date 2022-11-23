@@ -91,4 +91,21 @@ public class IOHelper {
         return result;
     }
 
+    public static int sum2d(String[][]arr){
+        if (arr == null){
+            throw  new NullPointerException("Массив не создан");
+        }
+        if (arr.length != 5){
+            throw new ArrayIndexOutOfBoundsException("Длина массива не равна 5");
+        }
+        int sum = 0;
+        for(int i =0; i<arr.length;i++){
+            for(int j =0;j<5;j++){
+                int val = Integer.parseInt(arr[i][j]);
+                sum+=val;
+            }
+        }
+        return sum;
+    }
+
 }
