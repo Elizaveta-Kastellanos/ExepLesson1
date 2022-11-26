@@ -1,3 +1,6 @@
+import Exceptions.PersonException;
+
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.List;
 
@@ -106,6 +109,50 @@ public class IOHelper {
             }
         }
         return sum;
+    }
+
+    public static void parsInPerson(String person) throws PersonException, IOException {
+        final int LENGTH_PERSON = 6;
+        final int LENGTH_DATE = 3;
+        final long MIN_PHONE = 78000000000l;
+        final long MAX_PHONE = 89999999999l;
+         String[] pars = person.split(" ");
+         if(pars.length != LENGTH_PERSON){
+             throw  new PersonException("Вы записали не все параметры. Их должно быть 6 через пробел" +
+                     "ФИО Дата рождения(в формате dd.mm.yy), номер телефона без к-л символов и пол(f или m)");
+         }
+         // проверка даты рождения(условий нет поэтому вменяемый возраст от 1 до 140, год от текущего до 1920 и день 1 - 31)
+        // по месяцам бы еще, но не в этот раз
+         String[] birthday = pars[3].split("\\.");
+         if(birthday.length != LENGTH_DATE){
+             throw new PersonException("Введите дату рождения корректно в формате(dd.mm.yy)");
+         }
+         if(Integer.parseInt(birthday[0]) < 1 || Integer.parseInt(birthday[0]) > 31){
+             throw new PersonException("Введите дату рождения корректно в формате(dd.mm.yy)");
+         }
+         if(Integer.parseInt(birthday[1]) < 1 || Integer.parseInt(birthday[1]) > 12){
+             throw new PersonException("Введите дату рождения корректно в формате(dd.mm.yy)");
+         }
+         if(Integer.parseInt(birthday[2]) < 1920 || Integer.parseInt(birthday[2]) > 2022){
+             throw new PersonException("Введите дату рождения корректно в формате(dd.mm.yy)");
+         }
+         // проверка номера телефона 8 999 111 11 11 (номер телефона для РФ, сотовый == 11 символов)
+        // (min)7 800 000 00 00
+        // (max)8 999 999 99 99
+        long phone = Long.parseLong(pars[4]);
+         if(phone <  MIN_PHONE || phone > MAX_PHONE){
+             throw new PersonException("Введите корректный номер телефона, без спец символов (11 цифр)");
+         }
+        if(Genders.m.name().equals(pars[5])){
+            Person newPerson = new Person(pars[0], pars[1], pars[2], pars[3], phone, Genders.m.name());
+            Logger.WriteFile(newPerson);
+        } else if(Genders.f.name().equals(pars[5])) {
+            Person newPerson = new Person(pars[0], pars[1], pars[2], pars[3], phone, Genders.f.name());
+            Logger.WriteFile(newPerson);
+        } else{
+            throw new PersonException("You enter f or m (f - female, m - male)");
+        }
+
     }
 
 }
